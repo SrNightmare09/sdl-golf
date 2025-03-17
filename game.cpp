@@ -63,8 +63,7 @@ void Game::initMap(int level) {
         if (data[i] == '/') {
             xPos = 0;
             yPos += tileSize;
-
-            std::cout << std::endl;
+            
             continue;
         }
 
@@ -74,7 +73,6 @@ void Game::initMap(int level) {
             int freq = std::stoi(num);
 
             for (int j = 0; j < freq; j++) {
-                std::cout << data[i + 1] << " ";
 
                 SDL_Texture* texture = this->sprites[data[i + 1]]->getTexture();
                 Tile tile(Vector2f(xPos, yPos), texture);
