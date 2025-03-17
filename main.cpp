@@ -20,15 +20,15 @@ int main(int argc, char* args[]) {
     SDL_Texture* wallTexture = util::loadTexture("assets/sprites/wall.png"); // 2
     SDL_Texture* holeTexture = util::loadTexture("assets/sprites/hole.png"); // 3
 
-    auto grass= std::make_unique<Tile>(Vector2f(0.0f, 0.0f), grassTexture);
-    auto stone = std::make_unique<Tile>(Vector2f(0.0f, 0.0f), stoneTexture);
-    auto wall = std::make_unique<Tile>(Vector2f(0.0f, 0.0f), wallTexture);
-    auto hole = std::make_unique<Tile>(Vector2f(0.0f, 0.0f), holeTexture);
+    Tile* grass= new Tile(Vector2f(), grassTexture);
+    Tile* stone = new Tile(Vector2f(), stoneTexture);
+    Tile* wall = new Tile(Vector2f(), wallTexture);
+    Tile* hole = new Tile(Vector2f(), holeTexture);
 
-    game.addSprite('g', std::move(grass));
-    game.addSprite('s', std::move(stone));
-    game.addSprite('w', std::move(wall));
-    game.addSprite('h', std::move(hole));
+    game.addSprite('g', grass);
+    game.addSprite('s', stone);
+    game.addSprite('w', wall);
+    game.addSprite('h', hole);
 
 #pragma endregion
 
@@ -60,11 +60,10 @@ int main(int argc, char* args[]) {
         }
 
         const float alpha = accumulator / deltaTime;
-
-        SDL_SetRenderDrawColor(Game::renderer, 36, 175, 64, 255);
+        
         game.clear();
 
-        // game.showMap();
+        game.showMap();
 
         game.display();
 

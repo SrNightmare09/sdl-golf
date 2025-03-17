@@ -81,8 +81,6 @@ void Game::initMap(int level) {
 
                 this->map.push_back(tile);
 
-                SDL_DestroyTexture(texture);
-
                 xPos += tileSize;
             }
         }
@@ -95,8 +93,8 @@ void Game::showMap() {
     }
 }
 
-void Game::addSprite(char tag, std::unique_ptr<Tile> tile){
-    this->sprites.insert({tag, std::move(tile)});
+void Game::addSprite(char tag, Tile* tile){
+    this->sprites.insert({tag, tile});
 }
 
 void Game::display() {

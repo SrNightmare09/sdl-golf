@@ -20,7 +20,7 @@ public:
     void init(const char* title, int width, int height);
     void clear();
     void close();
-    void addSprite(char tag, std::unique_ptr<Tile> tile);
+    void addSprite(char tag, Tile* tile);
     void initMap(int level);
     void showMap();
     void render(Entity& entity);
@@ -28,5 +28,5 @@ public:
     int getRefreshRate();
 
 private:
-    std::unordered_map<char, std::unique_ptr<Tile>> sprites;
+    std::unordered_map<char, Tile*> sprites;
 };
