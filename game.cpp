@@ -63,7 +63,7 @@ void Game::initMap(int level) {
         if (data[i] == '/') {
             xPos = 0;
             yPos += tileSize;
-            
+
             continue;
         }
 

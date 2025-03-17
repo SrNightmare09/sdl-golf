@@ -4,6 +4,7 @@
 #include "game.hpp"
 #include "tile.hpp"
 #include "util.hpp"
+#include "ball.hpp"
 
 using namespace util;
 
@@ -12,7 +13,7 @@ int main(int argc, char* args[]) {
     Game game;
     game.init("Golf!", 640, 640);
 
-#pragma region texture loading and tile
+#pragma region texture loading and tiles
 
     // load all textures
     SDL_Texture* grassTexture = util::loadTexture("assets/sprites/grass.png"); // 0
@@ -60,7 +61,7 @@ int main(int argc, char* args[]) {
         }
 
         const float alpha = accumulator / deltaTime;
-        
+
         game.clear();
 
         game.showMap();
