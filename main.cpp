@@ -18,14 +18,17 @@ int main(int argc, char* args[]) {
     SDL_Texture* grassTexture = util::loadTexture("assets/sprites/grass.png"); // 0
     SDL_Texture* stoneTexture = util::loadTexture("assets/sprites/stone.png"); // 1
     SDL_Texture* wallTexture = util::loadTexture("assets/sprites/wall.png"); // 2
+    SDL_Texture* holeTexture = util::loadTexture("assets/sprites/hole.png"); // 3
 
     Tile* grass= new Tile(Vector2f(), grassTexture);
     Tile* stone = new Tile(Vector2f(), stoneTexture);
     Tile* wall = new Tile(Vector2f(), wallTexture);
+    Tile* hole = new Tile(Vector2f(), holeTexture);
 
     game.addSprite('g', grass);
     game.addSprite('s', stone);
     game.addSprite('w', wall);
+    game.addSprite('h', hole);
 
 #pragma endregion
 
@@ -57,7 +60,7 @@ int main(int argc, char* args[]) {
         }
 
         const float alpha = accumulator / deltaTime;
-
+        
         game.clear();
 
         game.showMap();

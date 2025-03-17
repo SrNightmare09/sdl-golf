@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <memory>
 
 #include "entity.hpp"
 #include "tile.hpp"
@@ -15,7 +16,7 @@ public:
 
     std::vector<Tile> map;
 
-    ~Game();
+    ~Game() = default;
     void init(const char* title, int width, int height);
     void clear();
     void close();
