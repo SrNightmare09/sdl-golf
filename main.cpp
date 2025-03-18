@@ -16,15 +16,17 @@ int main(int argc, char* args[]) {
 #pragma region texture loading and tiles
 
     // load all textures
-    SDL_Texture* grassTexture = util::loadTexture("assets/sprites/grass.png"); // 0
-    SDL_Texture* stoneTexture = util::loadTexture("assets/sprites/stone.png"); // 1
-    SDL_Texture* wallTexture = util::loadTexture("assets/sprites/wall.png"); // 2
-    SDL_Texture* holeTexture = util::loadTexture("assets/sprites/hole.png"); // 3
+    SDL_Texture* grassTexture = util::loadTexture("assets/sprites/grass.png");
+    SDL_Texture* stoneTexture = util::loadTexture("assets/sprites/stone.png");
+    SDL_Texture* wallTexture = util::loadTexture("assets/sprites/wall.png");
+    SDL_Texture* holeTexture = util::loadTexture("assets/sprites/hole.png");
+    SDL_Texture* ballTexture = util::loadTexture("assets/sprites/ball.png");
 
     Tile* grass= new Tile(Vector2f(), grassTexture);
     Tile* stone = new Tile(Vector2f(), stoneTexture);
     Tile* wall = new Tile(Vector2f(), wallTexture);
     Tile* hole = new Tile(Vector2f(), holeTexture);
+    Ball* ball = new Ball(Vector2f(64.0f, 64.0f), ballTexture);
 
     game.addSprite('g', grass);
     game.addSprite('s', stone);
@@ -65,6 +67,7 @@ int main(int argc, char* args[]) {
         game.clear();
 
         game.showMap();
+        game.render(*ball);
 
         game.display();
 
