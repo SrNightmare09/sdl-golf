@@ -38,14 +38,19 @@ void Game::render(Entity &entity) {
 
     source.x = 0;
     source.y = 0;
-    source.w = entity.getRect().w;
-    source.h = entity.getRect().h;
+
+    int textureWidth;
+    int textureHeight;
+    SDL_QueryTexture(entity.getTexture(), NULL, NULL, &textureWidth, &textureHeight);
+
+    source.w = textureWidth;
+    source.h = textureHeight;
 
     SDL_Rect dest;
     dest.x = entity.getPos().x;
     dest.y = entity.getPos().y;
-    dest.w = entity.getRect().w;
-    dest.h = entity.getRect().h;
+    dest.w = textureWidth;
+    dest.h = textureHeight;
 
     SDL_RenderCopy(this->renderer, entity.getTexture(), &source, &dest);
 
