@@ -30,4 +30,8 @@ namespace util {
 
         return data;
     }
+
+    inline float getSign(float num) {
+        return (num / abs(num));
+    }
 }

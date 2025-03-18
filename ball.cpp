@@ -2,6 +2,9 @@
 #include <iostream>
 
 #include "ball.hpp"
+#include "util.hpp"
+
+using namespace util;
 
 Ball::Ball(Vector2f pos, SDL_Texture* texture) : Entity(pos, texture) {}
 
@@ -18,69 +21,44 @@ void Ball::moveBall(Vector2f disp) {
     constexpr float force_mult = 0.5f;
 
     // indicate if dx, dy were positive or negative
-    this->dir.x = (disp.x > 0) ? 1 : -1;
-    this->dir.y = (disp.y > 0) ? 1 : -1;
+    float iCap = util::getSign(disp.x);
+    float jCap = util::getSign(disp.y);
 
-    this->velocity.x = abs(force_mult * this->dir.x);
-    this->velocity.y = abs(force_mult * this->velocity.y);
+    float xVelocity = force_mult * abs(disp.x) * iCap;
+    float yVelocity = force_mult * abs(disp.y) * jCap;
 
-    std::cout << disp.x << " : " << disp.y << std::endl;
-    std::cout << this->getVelocity().x << " : " << this->getVelocity().y << std::endl;
-
+    // ball movement is directly opposite to mouse pointer direction, therefore minus sign
+    this->setVelocity(Vector2f(-xVelocity, -yVelocity));
 }
 
 void Ball::updatePos(Vector2f windowDim) {
 
-    // std::cout << "hello" << std::endl;
+    constexpr float friction = 0.05f;
 
-    constexpr float friction = 0.1f;
+    float winWidth = windowDim.x;
+    float winHeight = windowDim.y;
 
-    float xPos = this->getPos().x;
-    float yPos = this->getPos().y;
-    float xVel = this->getVelocity().x;
-    float yVel = this->getVelocity().y;
+    // move the ball ---  remove this-> for readability
+    this->setPos(Vector2f(this->getPos().x + this->getVelocity().x, this->getPos().y + this->getVelocity().y));
 
-    if (this->dir.x == 1) {
-        this->setPos(Vector2f(xPos - xVel, yVel));
+    if (this->getPos().x <= 0 || this->getPos().x + this->ballSize >= winWidth) {
+        this->setVelocity(Vector2f(this->getVelocity().x * -1, this->getVelocity().y));
     }
-    else {
-        this->setPos(Vector2f(xPos + xVel, yVel));
-    }
-    if (this->dir.y == 1) {
-        this->setPos(Vector2f(xPos, yPos - yVel));
-    }
-    else {
-        this->setPos(Vector2f(xPos, yPos + yVel));
+    if (this->getPos().y <= 0 || this->getPos().y + this->ballSize >= winHeight) {
+        this->setVelocity(Vector2f(this->getVelocity().x, this->getVelocity().y * -1));
     }
 
+    float newXVel = this->getVelocity().x * (1.0f - friction);
+    float newYVel = this->getVelocity().y * (1.0f - friction);
 
-    if (xPos + this->ballSize >= windowDim.x) {
-        this->setVelocity(Vector2f(-xVel, yVel));
-        this->setPos(Vector2f(xPos - this->ballSize, yPos));
-    }
-    else if (xPos - this->ballSize <= 0) {
-        this->setVelocity(Vector2f(-xVel, yVel));
-        this->setPos(Vector2f(xPos + this->ballSize, yPos));
-    }
+    this->setVelocity(Vector2f(newXVel, newYVel));
 
-    if (yPos + this->ballSize >= windowDim.y) {
-        this->setVelocity(Vector2f(xVel, -yVel));
-        this->setPos(Vector2f(xPos, yPos - this->ballSize));
+    // if the ball velocity is too slow, stop the ball
+    if (abs(this->getVelocity().x) <= 0.01f) {
+        this->setVelocity(Vector2f(0.0f, this->getVelocity().y));
     }
-    else if (yPos - this->ballSize <= 0) {
-        this->setVelocity(Vector2f(xVel, -yVel));
-        this->setPos(Vector2f(xPos, yPos + this->ballSize));
-    }
-
-    this->setPos(Vector2f(xPos * (1.0f - friction), yPos));
-    this->setPos(Vector2f(yPos, xPos * (1.0f - friction)));
-
-    if (abs(xVel) <= 1.0f) {
-        this->setVelocity(Vector2f(0.0f, yVel));
-    }
-
-    if (abs(xVel) <= 1.0f) {
-        this->setVelocity(Vector2f(xVel, 0.0f));
+    if (abs(this->getVelocity().y) <= 0.01f) {
+        this->setVelocity(Vector2f(this->getVelocity().x, 0.0f));
     }
 
 }

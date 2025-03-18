@@ -63,9 +63,7 @@ int main(int argc, char* args[]) {
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
-                    std::cout << "hi" << std::endl;
-
-                    constexpr float limit = 100.0f; // force limiter
+                    constexpr float limit = 50.0f; // force limiter
 
                     float mPosX = event.button.x;
                     float mPosY = event.button.y;
@@ -73,8 +71,8 @@ int main(int argc, char* args[]) {
                     float dx = mPosX - ball->getPos().x;
                     float dy = mPosY - ball->getPos().y;
 
-                    dx = (abs(dx) > limit) ? limit * (dx / abs(dx)) : dx;
-                    dy = (abs(dy) > limit) ? limit * (dy / abs(dy)) : dy;
+                    dx = (abs(dx) > limit) ? limit * util::getSign(dx) : dx;
+                    dy = (abs(dy) > limit) ? limit * util::getSign(dy) : dy;
 
                     ball->moveBall(Vector2f(dx, dy));
                     break;
