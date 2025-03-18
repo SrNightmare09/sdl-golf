@@ -26,7 +26,7 @@ int main(int argc, char* args[]) {
     Tile* stone = new Tile(Vector2f(), stoneTexture);
     Tile* wall = new Tile(Vector2f(), wallTexture);
     Tile* hole = new Tile(Vector2f(), holeTexture);
-    Ball* ball = new Ball(Vector2f(64.0f, 64.0f), ballTexture);
+    Ball* ball = new Ball(Vector2f(0.0f, 0.0f), ballTexture);
 
     game.addSprite('g', grass);
     game.addSprite('s', stone);
