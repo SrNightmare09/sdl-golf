@@ -68,7 +68,6 @@ void Game::initMap(int level) {
         if (data[i] == '/') {
             xPos = 0;
             yPos += tileSize;
-
             continue;
         }
 
@@ -79,7 +78,9 @@ void Game::initMap(int level) {
 
             for (int j = 0; j < freq; j++) {
 
-                SDL_Texture* texture = this->sprites[data[i + 1]]->getTexture();
+                // use the character from map string to get tile texture
+                char tileCode = data[i + 1];
+                SDL_Texture* texture = this->sprites[tileCode]->getTexture();
                 Tile tile(Vector2f(xPos, yPos), texture);
 
                 this->map.push_back(tile);

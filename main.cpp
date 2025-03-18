@@ -25,6 +25,7 @@ int main(int argc, char* args[]) {
     SDL_Texture* holeTexture = util::loadTexture("assets/sprites/hole.png");
     SDL_Texture* ballTexture = util::loadTexture("assets/sprites/ball.png");
 
+    // assign textures to objects
     Tile* grass = new Tile(Vector2f(), grassTexture);
     Tile* stone = new Tile(Vector2f(), stoneTexture);
     Tile* wall = new Tile(Vector2f(), wallTexture);
@@ -45,7 +46,7 @@ int main(int argc, char* args[]) {
     float accumulator = 0.0f;
     float currentTime = SDL_GetTicks() * 0.001f;
 
-    game.initMap(1);
+    game.initMap(1); // level 1
 
     while (running) {
 
@@ -68,9 +69,11 @@ int main(int argc, char* args[]) {
                     float mPosX = event.button.x;
                     float mPosY = event.button.y;
 
+                    // calculate distance between ball and mouse pointer on x and y
                     float dx = mPosX - ball->getPos().x;
                     float dy = mPosY - ball->getPos().y;
 
+                    // check if the distance between ball and mouse is within limit
                     dx = (abs(dx) > limit) ? limit * util::getSign(dx) : dx;
                     dy = (abs(dy) > limit) ? limit * util::getSign(dy) : dy;
 

@@ -24,6 +24,7 @@ void Ball::moveBall(Vector2f disp) {
     float iCap = util::getSign(disp.x);
     float jCap = util::getSign(disp.y);
 
+    // velocity of ball in direction of the mouse pointer
     float xVelocity = force_mult * abs(disp.x) * iCap;
     float yVelocity = force_mult * abs(disp.y) * jCap;
 
@@ -38,7 +39,7 @@ void Ball::updatePos(Vector2f windowDim) {
     float winWidth = windowDim.x;
     float winHeight = windowDim.y;
 
-    // move the ball ---  remove this-> for readability
+    // move the ball
     this->setPos(Vector2f(this->getPos().x + this->getVelocity().x, this->getPos().y + this->getVelocity().y));
 
     if (this->getPos().x <= 0 || this->getPos().x + this->ballSize >= winWidth) {
@@ -48,9 +49,9 @@ void Ball::updatePos(Vector2f windowDim) {
         this->setVelocity(Vector2f(this->getVelocity().x, this->getVelocity().y * -1));
     }
 
+    // calculate new velocity after friction
     float newXVel = this->getVelocity().x * (1.0f - friction);
     float newYVel = this->getVelocity().y * (1.0f - friction);
-
     this->setVelocity(Vector2f(newXVel, newYVel));
 
     // if the ball velocity is too slow, stop the ball
