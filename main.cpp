@@ -10,8 +10,11 @@ using namespace util;
 
 int main(int argc, char* args[]) {
 
+    constexpr float windowWidth = 640.0f;
+    constexpr float windowHeight = 640.0f;
+
     Game game;
-    game.init("Golf!", 640, 640);
+    game.init("Golf!", windowWidth, windowHeight);
 
 #pragma region texture loading and tiles
 
@@ -22,11 +25,11 @@ int main(int argc, char* args[]) {
     SDL_Texture* holeTexture = util::loadTexture("assets/sprites/hole.png");
     SDL_Texture* ballTexture = util::loadTexture("assets/sprites/ball.png");
 
-    Tile* grass= new Tile(Vector2f(), grassTexture);
+    Tile* grass = new Tile(Vector2f(), grassTexture);
     Tile* stone = new Tile(Vector2f(), stoneTexture);
     Tile* wall = new Tile(Vector2f(), wallTexture);
     Tile* hole = new Tile(Vector2f(), holeTexture);
-    Ball* ball = new Ball(Vector2f(0.0f, 0.0f), ballTexture);
+    Ball* ball = new Ball(Vector2f(160.0f, 160.0f), ballTexture);
 
     game.addSprite('g', grass);
     game.addSprite('s', stone);
@@ -54,9 +57,27 @@ int main(int argc, char* args[]) {
 
         while (accumulator >= deltaTime) {
             while (SDL_PollEvent(&event)) {
-                if (event.type == SDL_QUIT) {
+                switch (event.type) {
+                case SDL_QUIT:
                     running = false;
+                    break;
 
+                case SDL_MOUSEBUTTONDOWN:
+                    std::cout << "hi" << std::endl;
+
+                    constexpr float limit = 100.0f; // force limiter
+
+                    float mPosX = event.button.x;
+                    float mPosY = event.button.y;
+
+                    float dx = mPosX - ball->getPos().x;
+                    float dy = mPosY - ball->getPos().y;
+
+                    dx = (abs(dx) > limit) ? limit * (dx / abs(dx)) : dx;
+                    dy = (abs(dy) > limit) ? limit * (dy / abs(dy)) : dy;
+
+                    ball->moveBall(Vector2f(dx, dy));
+                    break;
                 }
             }
             accumulator -= deltaTime;
@@ -67,6 +88,9 @@ int main(int argc, char* args[]) {
         game.clear();
 
         game.showMap();
+
+        ball->updatePos(Vector2f(windowWidth, windowHeight));
+
         game.render(*ball);
 
         game.display();
