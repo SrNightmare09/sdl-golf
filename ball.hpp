@@ -16,5 +16,4 @@ public:
     void updatePos(Vector2f windowDim);
 private:
     Vector2f velocity;
-    Vector2f dir;
 };
