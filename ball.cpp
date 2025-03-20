@@ -44,15 +44,18 @@ void Ball::updatePos(Vector2f windowDim, float deltaTime) {
             continue;
         }
 
-        SDL_Rect ballRect = { static_cast<int>(predictedPos.x),
-                             static_cast<int>(predictedPos.y),
-                             static_cast<int>(ballSize),
-                             static_cast<int>(ballSize) };
+        SDL_Rect ballRect = {
+            static_cast<int>(predictedPos.x),
+            static_cast<int>(predictedPos.y),
+            static_cast<int>(ballSize),
+            static_cast<int>(ballSize)
+        };
 
         SDL_Rect tileRect = t.getRect();
 
+        // obstacle collision
         if (SDL_HasIntersection(&ballRect, &tileRect)) {
-            if (t.getTag() == 'w' || t.getTag() == 's') { // obstacle collision
+            if (t.getTag() == 'w' || t.getTag() == 's') {
 
                 // Calculate overlap on both axes
                 float overlapX = std::min(ballRect.x + ballRect.w, tileRect.x + tileRect.w) - std::max(ballRect.x, tileRect.x);
@@ -80,12 +83,16 @@ void Ball::updatePos(Vector2f windowDim, float deltaTime) {
 
     this->setPos(predictedPos);
 
-    // Apply friction
+    // apply friction
     float newXVel = this->getVelocity().x * (1.0f - friction);
     float newYVel = this->getVelocity().y * (1.0f - friction);
     this->setVelocity(Vector2f(newXVel, newYVel));
 
-    // Velocity threshold check
-    if (abs(this->getVelocity().x) <= minVelocity) this->setVelocity(Vector2f(0.0f, this->getVelocity().y));
-    if (abs(this->getVelocity().y) <= minVelocity) this->setVelocity(Vector2f(this->getVelocity().x, 0.0f));
+    // if velocity is less than minVelocity in an axis, stop the ball in that axis
+    if (abs(this->getVelocity().x) <= minVelocity) {
+        this->setVelocity(Vector2f(0.0f, this->getVelocity().y));
+    }
+    if (abs(this->getVelocity().y) <= minVelocity) {
+        this->setVelocity(Vector2f(this->getVelocity().x, 0.0f));
+    }
 }
