@@ -5,6 +5,7 @@
 #include "game.hpp"
 #include "entity.hpp"
 #include "util.hpp"
+#include "math.hpp"
 
 using namespace util;
 
@@ -81,7 +82,7 @@ void Game::initMap(int level) {
                 // use the character from map string to get tile texture
                 char tileCode = data[i + 1];
                 SDL_Texture* texture = this->sprites[tileCode]->getTexture();
-                Tile tile(Vector2f(xPos, yPos), texture);
+                Tile tile(Vector2f(xPos, yPos), texture, tileCode);
 
                 this->map.push_back(tile);
 

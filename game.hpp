@@ -8,6 +8,7 @@
 
 #include "entity.hpp"
 #include "tile.hpp"
+#include "math.hpp"
 
 class Game {
 public:

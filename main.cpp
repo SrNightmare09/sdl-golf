@@ -5,6 +5,7 @@
 #include "tile.hpp"
 #include "util.hpp"
 #include "ball.hpp"
+#include "math.hpp"
 
 using namespace util;
 
@@ -26,11 +27,11 @@ int main(int argc, char* args[]) {
     SDL_Texture* ballTexture = util::loadTexture("assets/sprites/ball.png");
 
     // assign textures to objects
-    Tile* grass = new Tile(Vector2f(), grassTexture);
-    Tile* stone = new Tile(Vector2f(), stoneTexture);
-    Tile* wall = new Tile(Vector2f(), wallTexture);
-    Tile* hole = new Tile(Vector2f(), holeTexture);
-    Ball* ball = new Ball(Vector2f(160.0f, 160.0f), ballTexture);
+    Tile* grass = new Tile(Vector2f(), grassTexture, 'g');
+    Tile* stone = new Tile(Vector2f(), stoneTexture, 's');
+    Tile* wall = new Tile(Vector2f(), wallTexture, 'w');
+    Tile* hole = new Tile(Vector2f(), holeTexture, 'h');
+    Ball* ball = new Ball(Vector2f(160.0f, 160.0f), ballTexture, &game);
 
     game.addSprite('g', grass);
     game.addSprite('s', stone);
@@ -90,7 +91,7 @@ int main(int argc, char* args[]) {
 
         game.showMap();
 
-        ball->updatePos(Vector2f(windowWidth, windowHeight));
+        ball->updatePos(Vector2f(windowWidth, windowHeight), deltaTime);
 
         game.render(*ball);
 

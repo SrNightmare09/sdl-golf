@@ -1,10 +1,5 @@
 #include "math.hpp"
 
-Vector2f::Vector2f() {
-    this->x = 0;
-    this->y = 0;
-}
-Vector2f::Vector2f(double x, double y) {
-    this->x = x;
-    this->y = y;
-}
+Vector2f::Vector2f() : x(0.0f), y(0.0f) {}
+
+Vector2f::Vector2f(double x, double y) : x(x), y(y) {}

@@ -3,10 +3,11 @@
 
 #include "ball.hpp"
 #include "util.hpp"
+#include "math.hpp"
 
 using namespace util;
 
-Ball::Ball(Vector2f pos, SDL_Texture* texture) : Entity(pos, texture) {}
+Ball::Ball(Vector2f pos, SDL_Texture* texture, Game* game) : Entity(pos, texture), game(game) {}
 
 Vector2f Ball::getVelocity() {
     return this->velocity;
@@ -18,7 +19,7 @@ void Ball::setVelocity(Vector2f velocity) {
 
 void Ball::moveBall(Vector2f disp) {
 
-    constexpr float force_mult = 0.5f;
+    constexpr float force_mult = 0.25f;
 
     // indicate if dx, dy were positive or negative
     float iCap = util::getSign(disp.x);
@@ -32,34 +33,59 @@ void Ball::moveBall(Vector2f disp) {
     this->setVelocity(Vector2f(-xVelocity, -yVelocity));
 }
 
-void Ball::updatePos(Vector2f windowDim) {
-
+void Ball::updatePos(Vector2f windowDim, float deltaTime) {
     constexpr float friction = 0.05f;
+    constexpr float minVelocity = 0.01f;
 
-    float winWidth = windowDim.x;
-    float winHeight = windowDim.y;
+    Vector2f predictedPos = Vector2f(this->getPos().x + this->getVelocity().x, this->getPos().y + this->getVelocity().y);
 
-    // move the ball
-    this->setPos(Vector2f(this->getPos().x + this->getVelocity().x, this->getPos().y + this->getVelocity().y));
+    for (Tile& t : game->map) {
+        if (t.getTag() == 'g') {
+            continue;
+        }
 
-    if (this->getPos().x <= 0 || this->getPos().x + this->ballSize >= winWidth) {
-        this->setVelocity(Vector2f(this->getVelocity().x * -1, this->getVelocity().y));
+        SDL_Rect ballRect = { static_cast<int>(predictedPos.x),
+                             static_cast<int>(predictedPos.y),
+                             static_cast<int>(ballSize),
+                             static_cast<int>(ballSize) };
+
+        SDL_Rect tileRect = t.getRect();
+
+        if (SDL_HasIntersection(&ballRect, &tileRect)) {
+            if (t.getTag() == 'w' || t.getTag() == 's') { // obstacle collision
+
+                // Calculate overlap on both axes
+                float overlapX = std::min(ballRect.x + ballRect.w, tileRect.x + tileRect.w) - std::max(ballRect.x, tileRect.x);
+                float overlapY = std::min(ballRect.y + ballRect.h, tileRect.y + tileRect.h) - std::max(ballRect.y, tileRect.y);
+
+                // resolve based on the smaller overlap (indicating the side of impact)
+                if (overlapX < overlapY) {
+                    predictedPos.x = this->getPos().x;  // step back on X
+                    this->setVelocity(Vector2f(-this->getVelocity().x * 0.5f, this->getVelocity().y));
+                }
+                else {
+                    predictedPos.y = this->getPos().y;  // step back on Y
+                    this->setVelocity(Vector2f(this->getVelocity().x, -this->getVelocity().y * 0.5f));
+                }
+            }
+
+            // win condition
+            else if (t.getTag() == 'h') {
+                this->setVelocity(Vector2f(0.0f, 0.0f));
+                std::cout << "hole" << std::endl;
+                return;
+            }
+        }
     }
-    if (this->getPos().y <= 0 || this->getPos().y + this->ballSize >= winHeight) {
-        this->setVelocity(Vector2f(this->getVelocity().x, this->getVelocity().y * -1));
-    }
 
-    // calculate new velocity after friction
+    this->setPos(predictedPos);
+
+    // Apply friction
     float newXVel = this->getVelocity().x * (1.0f - friction);
     float newYVel = this->getVelocity().y * (1.0f - friction);
     this->setVelocity(Vector2f(newXVel, newYVel));
 
-    // if the ball velocity is too slow, stop the ball
-    if (abs(this->getVelocity().x) <= 0.01f) {
-        this->setVelocity(Vector2f(0.0f, this->getVelocity().y));
-    }
-    if (abs(this->getVelocity().y) <= 0.01f) {
-        this->setVelocity(Vector2f(this->getVelocity().x, 0.0f));
-    }
-
+    // Velocity threshold check
+    if (abs(this->getVelocity().x) <= minVelocity) this->setVelocity(Vector2f(0.0f, this->getVelocity().y));
+    if (abs(this->getVelocity().y) <= minVelocity) this->setVelocity(Vector2f(this->getVelocity().x, 0.0f));
 }
