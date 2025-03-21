@@ -78,7 +78,11 @@ int main(int argc, char* args[]) {
                     dx = (abs(dx) > limit) ? limit * util::getSign(dx) : dx;
                     dy = (abs(dy) > limit) ? limit * util::getSign(dy) : dy;
 
-                    ball->moveBall(Vector2f(dx, dy));
+                    // move ball only if ball is stationary
+                    if (ball->getVelocity().x == 0 && ball->getVelocity().y == 0) {
+                        ball->moveBall(Vector2f(dx, dy));
+                    }
+
                     break;
                 }
             }
